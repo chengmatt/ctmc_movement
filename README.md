@@ -15,3 +15,23 @@ Animal migrations and movement patterns are fundamental drivers that govern the 
 - sim_plots.R plots simulation results
 - setup_basic_spatial_em.R sets up a spatial EM for use in simulation
 - run_movement_sim.R runs all simulations
+
+#### Prerequisites
+
+Ensure the following packages are installed:
+
+```
+install.packages("devtools")       # Development tools
+install.packages("TMB")            # Template Model Builder
+install.packages("RTMB")           # R interface to TMB
+TMB:::install.contrib("https://github.com/vtrijoulet/OSA_multivariate_dists/archive/main.zip") # Optional: multivariate OSA distributions
+remotes::install_github("fishfollower/compResidual/compResidual") # Optional OSA residuals
+```
+
+#### Installing SPoRC
+```
+devtools::install_github(
+  "chengmatt/SPoRC@dev-movement",
+  dependencies = c("Depends", "Imports")
+)
+```
