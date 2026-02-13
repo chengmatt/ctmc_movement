@@ -23,8 +23,6 @@ library(igraph)
 library(splines2)
 library(mgcv)
 
-devtools::load_all(here("R"))
-
 data("three_rg_sable_data")
 
 # Initialize model dimensions and data list
@@ -441,8 +439,6 @@ clusterEvalQ(cl, {
 # Run parallel loop across movement model scenarios
 model <- pblapply(1:nrow(model_df), function(i) {
 
-  # devtools::load_all(here("R"))
-
   # Setup movement model
   input_list <- SPoRC:::Setup_Mod_Movement(
     input_list = input_list,
@@ -451,7 +447,7 @@ model <- pblapply(1:nrow(model_df), function(i) {
     ctmc_move_dat = ctmc_data,
     Movement_ageblk_spec = model_df$age_blk_spec[[i]],
     adjacency_mat = adjacency,
-    area_r = c(0.738, 0.145, 0.117),
+    area_r = c(0.745, 0.145, 0.11),
     diffusion_formula = diffusion_formula,
     preference_formula = preference_formula,
     ctmc_diffusion_bounds = model_df$ctmc_diffusion_bounds[i],
