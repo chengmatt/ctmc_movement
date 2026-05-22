@@ -1,4 +1,4 @@
-# From Here to There and Back Again: Parsimonious Estimation of Environment- and Demography-Dependent Movement in Spatially-Stratified Stock Assessment Models
+# Parsimonious Estimation of Environment- and Demography-Dependent Movement in Spatially-Stratified Stock Assessment Models
 
 ## Authors
 Matthew LH. Cheng, James T. Thorson, Daniel R. Goethel, Curry J. Cunningham
