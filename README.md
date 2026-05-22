@@ -31,7 +31,7 @@ remotes::install_github("fishfollower/compResidual/compResidual") # Optional OSA
 #### Installing SPoRC
 ```
 devtools::install_github(
-  "chengmatt/SPoRC@dev-movement",
+  "chengmatt/SPoRC@HEAD",
   dependencies = c("Depends", "Imports")
 )
 ```
