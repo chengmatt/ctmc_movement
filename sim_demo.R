@@ -69,14 +69,15 @@ constmove_df <- reshape2::melt(const$Movement) %>%
 
 const_move_plot <- constmove_df %>%
   filter(sex == 1, year == 1, sim == 1) %>%
-  ggplot(aes(x = age, y = value, color = factor(to))) +
+  mutate(from = paste("From", from), to = paste("To", to)) %>%
+  ggplot(aes(x = age, y = value, color = factor(to), lty = factor(to))) +
   geom_line(lwd = 1.3) +
   facet_wrap(~from) +
   coord_cartesian(ylim = c(0,1)) +
   scale_color_manual(values = colors) +
   theme_bw(base_size = 20) +
   labs(x = 'Age', y = 'Movement', color = '', lty = '') +
-  theme(legend.position = c(0.08, 0.5), legend.background = element_blank())
+  theme(legend.position = c(0.09, 0.5), legend.background = element_blank())
 
 # Time plots
 timemove_df <- reshape2::melt(time_move$Movement) %>%
@@ -85,7 +86,7 @@ timemove_df <- reshape2::melt(time_move$Movement) %>%
 
 timemove_plot <- timemove_df %>%
   filter(sex == 1, age == 15, sim == 1) %>%
-  ggplot(aes(x = year, y = value, color = factor(to))) +
+  ggplot(aes(x = year, y = value, color = factor(to), lty = factor(to))) +
   geom_line(lwd = 1.3) +
   facet_wrap(~from) +
   coord_cartesian(ylim = c(0,1)) +
@@ -101,7 +102,7 @@ agemove_df <- reshape2::melt(age_move$Movement) %>%
 
 agemove_plot <- agemove_df %>%
   filter(sex == 1, age != 1, sim == 1, year == 30) %>%
-  ggplot(aes(x = age, y = value, color = factor(to))) +
+  ggplot(aes(x = age, y = value, color = factor(to), lty = factor(to))) +
   geom_line(lwd = 1.3) +
   facet_wrap(~from) +
   scale_color_manual(values = colors) +
@@ -137,7 +138,7 @@ age_envmove_df <- reshape2::melt(age_env_move$Movement) %>%
 
 age_env_plot <- age_envmove_df %>%
   filter(sex == 1, age == 15, sim == 1) %>%
-  ggplot(aes(x = year, y = value, color = factor(to))) +
+  ggplot(aes(x = year, y = value, color = factor(to), lty = factor(to))) +
   geom_line(lwd = 1.3) +
   facet_wrap(~from) +
   coord_cartesian(ylim = c(0,1)) +
@@ -163,7 +164,7 @@ temp_df <- reshape2::melt(temp_effect) %>%
   mutate(years = as.numeric(str_remove(years, 'V')),
          taxis = gaussian_dome(temp, 0, 1))
 
-cov_plot <- ggplot(temp_df, aes(x = years, y = taxis, color = paste("Region", factor(regions)))) +
+cov_plot <- ggplot(temp_df, aes(x = years, y = taxis, color = paste("Region", factor(regions)), lty = paste("Region", factor(regions)))) +
   geom_line(lwd = 1.3) +
   scale_color_manual(values = colors)  +
   theme_bw(base_size = 20) +

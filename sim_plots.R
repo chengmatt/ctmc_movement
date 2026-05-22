@@ -30,6 +30,7 @@ scenario <- c("const", "age", "time", "timeage", "age_env")
 # empty containers
 ssb_df <- data.frame()
 move_df <- data.frame()
+aic_df <- data.frame()
 
 for(i in 1:length(sim_model_res)) {
 
@@ -67,8 +68,12 @@ for(i in 1:length(sim_model_res)) {
         by = c("from", "to", "years", "ages")
       )
 
+    tmp_aic <- data.frame(aic = tmp_res[[j]]$marg_AIC, model_id = tmp_res[[j]]$model_id,
+                          sim_id = tmp_res[[j]]$sim_id, scenario = scenario[i])
+
     ssb_df <- rbind(ssb_df, tmp_ssb)
     move_df <- rbind(tmp_move, move_df)
+    aic_df <- rbind(tmp_aic, aic_df)
     print(j)
 
   } # end j loop
@@ -90,6 +95,47 @@ conv_rates_plot <- conv_rates %>%
   ungroup() %>%
   mutate(model_id = ifelse(model_id == 1, "unstrc_mark", "ctmc")) %>%
   mutate(region = 'Region 1') # add for plotting
+
+# Get converged sim_ids per model
+converged_ids <- ssb_df %>%
+  filter(Var1 == 1, Var2 == 1, pd == TRUE, grad < 0.01) %>%
+  distinct(model_id, sim_id, scenario)
+
+# Keep only sim_ids where BOTH models converged
+converged_pairs <- converged_ids %>%
+  group_by(sim_id, scenario) %>%
+  filter(n() == 2) %>%
+  ungroup() %>%
+  select(sim_id, scenario) %>%
+  distinct()
+
+# Filter AIC to converged pairs and find which model has lower AIC
+aic_compare <- aic_df %>%
+  inner_join(converged_pairs, by = c("sim_id", 'scenario')) %>%
+  mutate(model_id = ifelse(model_id == 1, "unstrc_mark", "ctmc")) %>%
+  pivot_wider(names_from = model_id, values_from = aic) %>%
+  mutate(delta_aic = unstrc_mark - ctmc,
+         preferred = ifelse(delta_aic > 0, "ctmc", "unstrc_mark"))
+
+# how often each model is preferred
+aic_summary <- aic_compare %>%
+  group_by(scenario, preferred) %>%
+  summarize(n = n(), .groups = "drop") %>%
+  group_by(scenario) %>%
+  mutate(prop = n / sum(n))
+
+# Mean delta AIC by scenario
+mean_delta_aic <- aic_compare %>%
+  group_by(scenario) %>%
+  summarize(
+    mean_delta = mean(delta_aic, na.rm = TRUE),
+    sd_delta   = sd(delta_aic, na.rm = TRUE),
+    median_delta = median(delta_aic, na.rm = TRUE),
+    n = n(),
+    .groups = "drop"
+  )
+
+
 
 # Data Munging ------------------------------------------------------------
 
